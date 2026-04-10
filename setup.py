@@ -22,16 +22,12 @@ setup(
     version=vers,
     install_requires=[
         "setuptools",
-        "scipy",
-        "scikit-learn", 
         "pykakasi == 2.3.0",
-        "tltk == 1.9.1",
+        "pythainlp[thai2rom]",
         "pinyin_jyutping_sentence == 1.3",
         "pyicu",
         "shapely",
-        "sdnotify",
-        "requests",
-        "pandas"
+        "sdnotify"
     ],
     scripts = [ "transcription-daemon/geo-transcript-srv.py", "transcription-cli/transcribe.py" ],
     packages = [ "osml10n" ],

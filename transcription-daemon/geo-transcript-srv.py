@@ -1,4 +1,4 @@
-#!/home/sve25126/tmp/foo/bin/python3
+#!/usr/bin/python3
 
 import argparse
 import asyncio
@@ -53,12 +53,34 @@ except Exception as ex:
 
 try:
   # thai language in TH
-  import tltk
-except Exception as ex:
-  sys.stderr.write("\nERROR: unable to load python module tltk! Probably the following command will work:\n")
-  sys.stderr.write("pip install tltk\n\n")
-  sys.stderr.write("Error message was:\n%s\n" % ex)
-  sys.exit(1)
+  from pythainlp.tokenize import word_tokenize
+  from pythainlp.transliterate import romanize
+  
+  try:
+    # check if the Machine Learning based engine is available, if not use strict rules
+    romanize("ห้องสมุดประชาชน", engine="thai2rom")
+    def thai_romanize(st):
+      words = word_tokenize(st, engine="newmm")
+      return " ".join([romanize(w, engine="thai2rom") for w in words]).strip()
+    thai_type = "pythainlp (thai2rom)"
+  except:
+    def thai_romanize(st):
+      words = word_tokenize(st, engine="newmm")
+      return " ".join([romanize(w, engine="royin") for w in words]).strip()
+    thai_type = "pythainlp (royin)"
+  thai_version = version("pythainlp")
+except Exception as exp:
+  try:
+    import tltk
+    def thai_romanize(st):
+      return tltk.nlp.th2roman(st).rstrip('<s/>').rstrip()
+    thai_type = "tltk"
+    thai_version = version("tltk")
+  except Exception as ex:
+    sys.stderr.write("\nERROR: unable to load python modules for thai support! Probably the following command will work:\n")
+    sys.stderr.write("pip install pythainlp, pip install tltk\n\n")
+    sys.stderr.write("Error message were:\n%s\n%s\n" % (exp, ex))
+    sys.exit(1)
 
 try:
   # Cantonese transcription
@@ -93,9 +115,9 @@ def thai_transcript(inpstr):
     if (unicodedata.name(st[0]).split(' ')[0] == 'THAI'):
       transcript=''
       try:
-        transcript=tltk.nlp.th2roman(st).rstrip('<s/>').rstrip()
+        transcript=thai_romanize(st)
       except:
-        sys.stderr.write("tltk error transcribing >%s<\n" % st)
+        sys.stderr.write("%s error transcribing >%s<\n" % (thai_type, st))
         return(None)
       latin=latin+transcript
     else:
@@ -301,7 +323,7 @@ async def main():
     await server.serve_forever()
 
 if __name__ == "__main__":
-  sys.stdout.write("ready.\n(using pykakasi "+version('pykakasi')+', '+"tltk "+version('tltk')+', '+"pinyin_jyutping_sentence "+version('pinyin_jyutping_sentence')+')\n')
+  sys.stdout.write("ready.\n(using pykakasi "+version('pykakasi')+', '+thai_type+' '+thai_version+', '+"pinyin_jyutping_sentence "+version('pinyin_jyutping_sentence')+')\n')
   if args.sdnotify:
     import sdnotify
     sdnotify.SystemdNotifier().notify("READY=1")

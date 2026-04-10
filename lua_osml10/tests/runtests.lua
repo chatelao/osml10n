@@ -157,9 +157,9 @@ checkoutput(osml10n.geo_transcript,"geo_transcript","hàn zì 100 abc",'42','漢
 checkoutput(osml10n.geo_transcript,"geo_transcript","běi jīng",'42','北京',{-30, 49, -29, 50})
 
 -- Thailand
-checkoutput(osml10n.geo_transcript,"geo_transcript","hongsamut prachachon",'42','ห้องสมุดประชาชน',{100, 14, 101, 15})
+checkoutput(osml10n.geo_transcript,"geo_transcript","hongsamutprachachon",'42','ห้องสมุดประชาชน',{100, 14, 101, 15})
 checkoutput(osml10n.geo_transcript,"geo_transcript","thai thanon khaosan 100",'42','thai ถนนข้าวสาร 100',{100, 14, 101, 15})
-checkoutput(osml10n.geo_transcript,"geo_transcript","anusawari phraya ratsa da nu pradit",'42','อนุสาวรีย์พระยารัษฎาณุประดิษฐ์',{100, 14, 101, 15})
+checkoutput(osml10n.geo_transcript,"geo_transcript","anusawari phraya ratsada nu pradit",'42','อนุสาวรีย์พระยารัษฎาณุประดิษฐ์',{100, 14, 101, 15})
 
 -- Macau
 checkoutput(osml10n.geo_transcript,"geo_transcript","hōeng góng",'42',"香港",{113.54, 22.16, 113.58, 22.2})
