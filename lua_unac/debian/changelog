@@ -1,3 +1,9 @@
+lua-unaccent (2.9-1) UNRELEASED; urgency=medium
+
+  * New release based on utf8proc (2.9.0 at the time of writing)
+
+ -- Sven Geggus <sven-debian@geggus.net>  Tue, 14 Apr 2026 18:57:48 +0200
+
 lua-unaccent (1.8-1) unstable; urgency=medium
 
   * Initial release based on libunac 1.8

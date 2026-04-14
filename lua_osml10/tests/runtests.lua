@@ -102,6 +102,7 @@ failed = 0
 checkoutput(unaccent.unaccent,"unaccent","Besancon","Besançon")
 checkoutput(unaccent.unaccent,"unaccent","Munchen","München")
 checkoutput(unaccent.unaccent,"unaccent","Brussel","Brüssel")
+checkoutput(unaccent.unaccent,"unaccent","Ijebu-Igbo","Ìjẹ̀bú-Ìgbò")
 print("")
 checkoutput(osml10n.is_latin,"is_latin",true,"Eigenheimstraße")
 checkoutput(osml10n.is_latin,"is_latin",false,"улица Воздвиженка")
@@ -272,6 +273,16 @@ checkoutput(osml10n.get_streetname_from_tags,"get_streetname_from_tags","‪鳳�
 -- name tag which contains three names
 checkoutput(osml10n.get_placename_from_tags,"get_placename_from_tags","‪Bouira|البويرة|ⵝⵓⵠⵉⵔⴻⵜ‬",'',
 { ["name"] = "Bouira البويرة ⵝⵓⵠⵉⵔⴻⵜ", ["name:de"] = "Bouira",["name:ar"] = "البويرة",["name:ber"] = "ⵝⵓⵠⵉⵔⴻⵜ" },false, '|','de')
+
+checkoutput(osml10n.get_placename_from_tags,"get_placename_from_tags","Sénégal",'',
+{ ["name"]= "Sénégal",["name:fr"]= "Sénégal"},false,' - ',"de")
+
+checkoutput(osml10n.get_placename_from_tags,"get_placename_from_tags","Ìjẹ̀bú-Ìgbò",'',
+{ ["name"]= "Ìjẹ̀bú-Ìgbò",["name:en"]= "Ijebu-Igbo"},false,' - ',"de")
+
+-- longer name contains shorter name
+checkoutput(osml10n.get_placename_from_tags,"get_placename_from_tags","‪Ziré Sbeïkha | زيري سبيخة‬",'',
+{ ["name"]= "Ziré Sbeïkha زيري سبيخة",["name:fr"]= "Ziré Sbeïkha",["name:ar"]= "زيري سبيخة"},false,' | ',"de")
 
 print(passed .. " tests passed, " .. failed .. " tests failed.")
 

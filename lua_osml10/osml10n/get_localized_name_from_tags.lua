@@ -132,12 +132,10 @@ function osml10n.gen_combined_names(local_tag, tags, localized_name_last, is_str
   -- Bolzano
   
   -- at this place tags["name"] is not nil
-  if helpers.is_latin(tags['name']) then
-    unacc = unaccent.unaccent(tags['name'])
-  else
-    unacc = tags['name']  
-  end
+  unacc = unaccent.unaccent(tags['name'])
   unacc_local = unaccent.unaccent(local_name)
+  dbgprint("unacc: " .. unacc)
+  dbgprint("unacc_local: " .. unacc_local)
   found = false;
 
   -- unacc_local may contain lua magic characters so we need to escape them for string.find
@@ -181,7 +179,9 @@ function osml10n.gen_combined_names(local_tag, tags, localized_name_last, is_str
       table.sort(lang_names)
       
       for _,tag in ipairs(lang_names) do
-	unacc_tag = unaccent.unaccent(tags[tag])
+        dbgprint('processing tag ' .. tag .. ': ' .. tags[tag])
+        unacc_tag = unaccent.unaccent(tags[tag])
+	dbgprint('unaccended tag ' .. tag .. ': ' .. unacc_tag)
 	local escaped_unacc_tag = string.gsub(unacc_tag, '[.]', '::')
 	escaped_unacc_tag = string.gsub(escaped_unacc_tag, '[][()%%+*?^$]', '@')
 	if (unacc_tag ~= unacc_local) then
