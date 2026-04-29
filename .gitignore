@@ -9,3 +9,6 @@ debian/*.substvars
 debian/files
 build
 *.egg-info
+venv/
+__pycache__/
+*.so

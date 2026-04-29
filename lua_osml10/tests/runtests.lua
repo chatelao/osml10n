@@ -131,7 +131,7 @@ checkoutput(osml10n.get_country_name,"get_country_name",{ "Andorra" },{["ISO3166
 
 print("")
 
-local scriptdir = debug.getinfo(1).source:match("@?(.*/)")
+local scriptdir = debug.getinfo(1).source:match("@?(.*/)") or "."
 
 for _, lang in pairs({"de", "en", "fr"}) do
   -- streetname abbreviations for current language
