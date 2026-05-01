@@ -4,16 +4,24 @@ local server_host = '127.0.0.1'
 local server_port = 8033
 
 local socket = require('socket')
-local sock = socket.connect(server_host, server_port)
+local sock = nil
 
-if not sock then
-    error("Can not connect to server " .. server_host .. ":" .. server_port ..
-          ". Is geo-transcript-srv.py running?")
+local function get_socket()
+  if sock then
+    return sock
+  end
+
+  sock = socket.connect(server_host, server_port)
+  if not sock then
+      error("Can not connect to server " .. server_host .. ":" .. server_port ..
+            ". Is geo-transcript-srv.py running?")
+  end
+  sock:setoption('tcp-nodelay', true)
+  return sock
 end
 
-sock:setoption('tcp-nodelay', true)
-
 function osml10n.geo_transcript(id,name,bbox)
+  local s = get_socket()
   local lon,lat,reqbody
   local bx = {}
   if (bbox == nil) then
@@ -35,14 +43,14 @@ function osml10n.geo_transcript(id,name,bbox)
     reqbody = "XY/" .. id .. "/" .. lon .. "/" .. lat .. "/" .. name
   end
 
-  sock:send(string.pack('s4', reqbody))
-  lendata, msg = sock:receive(4)
+  s:send(string.pack('s4', reqbody))
+  local lendata, msg = s:receive(4)
   if lendata == nil then
     error(msg)
   end
-  length = string.unpack('I4', lendata)
+  local length = string.unpack('I4', lendata)
   if (length > 0) then
-      local response, msg = sock:receive(length)
+      local response, msg = s:receive(length)
       if response == nil then
         error(msg)
       end
@@ -53,6 +61,7 @@ function osml10n.geo_transcript(id,name,bbox)
 end
 
 function osml10n.country_transcript(id,name,country)
+  local s = get_socket()
   local reqbody
   if (country == nil) then
     reqbody = "CC/" .. id .. "/" .. "/" .. name
@@ -60,14 +69,14 @@ function osml10n.country_transcript(id,name,country)
     reqbody = "XY/" .. id .. "/" .. country .. "/" .. name
   end
 
-  sock:send(string.pack('s4', reqbody))
-  lendata, msg = sock:receive(4)
+  s:send(string.pack('s4', reqbody))
+  local lendata, msg = s:receive(4)
   if lendata == nil then
     error(msg)
   end
-  length = string.unpack('I4', lendata)
+  local length = string.unpack('I4', lendata)
   if (length > 0) then
-      local response, msg = sock:receive(length)
+      local response, msg = s:receive(length)
       if response == nil then
         error(msg)
       end
