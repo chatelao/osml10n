@@ -286,15 +286,21 @@ async def handle_connection(reader, writer):
         if cmd == 'CC':
           (id,cc,name) = data[3:].split('/', 2)
         elif cmd == 'XY':
-          (id,lon,lat,name) = data[3:].split('/', 3)
-          # Do check for country only if string contains Thai or CJK characters
-          if contains_cjk(name):
-            cc = co2c.getCountry(id,lon,lat)
+          parts = data[3:].split('/', 3)
+          if len(parts) < 4:
+            # CC/id/country/name format as send from osml10n.country_transcript
+            # in original (deprecated) Lua code using XY as command
+            (id, cc, name) = parts
           else:
-            if contains_thai(name):
-              cc = 'th'
+            (id,lon,lat,name) = parts
+            # Do check for country only if string contains Thai or CJK characters
+            if contains_cjk(name):
+              cc = co2c.getCountry(id,lon,lat)
             else:
-              cc = ''
+              if contains_thai(name):
+                cc = 'th'
+              else:
+                cc = ''
         else:
           sys.stderr.write(f"Ignore unkown command '{cmd}'\n")
           await send_reply(writer, '')
