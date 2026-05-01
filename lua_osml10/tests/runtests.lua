@@ -75,8 +75,23 @@ function checkoutput(func,name,result,...)
   
   res=func(...)
 
+  local is_ok = false
+  if (type(result) == "table" and result[1] ~= nil and type(res) ~= "table") then
+    for _,v in ipairs(result) do
+      if res == v then
+        is_ok = true
+        result = v
+        break
+      end
+    end
+  elseif (type(res) == "table") then
+    is_ok = table_compare(res, result)
+  else
+    is_ok = (res == result)
+  end
+
   if (type(res) == "table") then
-    if table_compare(res,result) then
+    if is_ok then
       print("[\27[1;32mOK\27[0;0m] (expected \27[1;1m" .. hash2string(result) .. "\27[1;0m, got \27[1;1m" .. hash2string(res) .. "\27[1;0m)")
       passed = passed + 1
     else
@@ -84,11 +99,15 @@ function checkoutput(func,name,result,...)
       failed = failed + 1
     end
   else
-    if (res == result) then
+    if is_ok then
       print("[\27[1;32mOK\27[0;0m] (expected \27[1;1m" .. tostring(result) .. "\27[1;0m, got \27[1;1m" .. tostring(res) .. "\27[1;0m)")
       passed = passed + 1
     else
-      print("[\27[1;31mERROR\27[0;0m] (expected \27[1;1m" .. tostring(result) .. "\27[1;0m, got \27[1;1m" .. tostring(res) .. "\27[1;0m)")
+      if type(result) == "table" then
+        print("[\27[1;31mERROR\27[0;0m] (expected one of \27[1;1m" .. hash2string(result) .. "\27[1;0m, got \27[1;1m" .. tostring(res) .. "\27[1;0m)")
+      else
+        print("[\27[1;31mERROR\27[0;0m] (expected \27[1;1m" .. tostring(result) .. "\27[1;0m, got \27[1;1m" .. tostring(res) .. "\27[1;0m)")
+      end
       failed = failed + 1
     end
   end
@@ -159,10 +178,9 @@ checkoutput(osml10n.geo_transcript,"geo_transcript","běi jīng",'42','北京',{
 
 -- Thailand
 -- Note: Expected values might depend on pythainlp version and engine (thai2rom vs royin)
--- In this environment, it seems to fall back to royin.
-checkoutput(osml10n.geo_transcript,"geo_transcript","ongtmutprachatn",'42','ห้องสมุดประชาชน',{100, 14, 101, 15})
+checkoutput(osml10n.geo_transcript,"geo_transcript",{"hongsamutprachachon", "ongtmutprachatn"},'42','ห้องสมุดประชาชน',{100, 14, 101, 15})
 checkoutput(osml10n.geo_transcript,"geo_transcript","thai thanon khaosan 100",'42','thai ถนนข้าวสาร 100',{100, 14, 101, 15})
-checkoutput(osml10n.geo_transcript,"geo_transcript","nusaori phraya ratda nu pradit",'42','อนุสาวรีย์พระยารัษฎาณุประดิษฐ์',{100, 14, 101, 15})
+checkoutput(osml10n.geo_transcript,"geo_transcript",{"anusawari phraya ratsada nu pradit", "nusaori phraya ratda nu pradit"},'42','อนุสาวรีย์พระยารัษฎาณุประดิษฐ์',{100, 14, 101, 15})
 
 -- Macau
 checkoutput(osml10n.geo_transcript,"geo_transcript","hōeng góng",'42',"香港",{113.54, 22.16, 113.58, 22.2})
@@ -178,7 +196,7 @@ checkoutput(osml10n.geo_transcript,"geo_transcript","Moskvá",'42',"Москва
 -- country_transcript
 checkoutput(osml10n.country_transcript,"country_transcript","Toukyou",'42',"東京","jp")
 checkoutput(osml10n.country_transcript,"country_transcript","Moskvá",'42',"Москва́")
-checkoutput(osml10n.country_transcript,"country_transcript","ongtmut",'42',"ห้องสมุด","th")
+checkoutput(osml10n.country_transcript,"country_transcript",{"hongsamut", "ongtmut"},'42',"ห้องสมุด","th")
 
 -- check with / (slash character) in the name
 checkoutput(osml10n.geo_transcript,"geo_transcript","some/name",'42',"some/name",{114.15, 22.28, 114.2, 22.33})
