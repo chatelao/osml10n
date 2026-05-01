@@ -13,12 +13,37 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Cache build artifacts
+      uses: actions/cache@v3
+      with:
+        path: |
+          lua_unac/*.so
+          venv
+        key: ${{ runner.os }}-build-${{ hashFiles('lua_unac/*.c', 'lua_unac/Makefile', 'setup.py') }}
+
     - name: Install dependencies
       run: |
         chmod +x test/install.sh
         ./test/install.sh
 
-    - name: Run tests
+    - name: Run Python unit tests
+      run: |
+        ./venv/bin/python test/test_daemon.py
+
+    - name: Run Lua integration tests
       run: |
         chmod +x test/run_test.sh
         ./test/run_test.sh
