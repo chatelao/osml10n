@@ -25,7 +25,7 @@ function osml10n.geo_transcript(id,name,bbox)
   local lon,lat,reqbody
   local bx = {}
   if (bbox == nil) then
-    reqbody = "CC/" .. id .. "/" .. "/" .. name
+    reqbody = "CC/" .. id .. "//" .. name
   else
     if (type(bbox) == "function") then
       bx[1], bx[2], bx[3], bx[4] = bbox()
@@ -64,9 +64,9 @@ function osml10n.country_transcript(id,name,country)
   local s = get_socket()
   local reqbody
   if (country == nil) then
-    reqbody = "CC/" .. id .. "/" .. "/" .. name
+    reqbody = "CC/" .. id .. "//" .. name
   else
-    reqbody = "XY/" .. id .. "/" .. country .. "/" .. name
+    reqbody = "CC/" .. id .. "/" .. country .. "/" .. name
   end
 
   s:send(string.pack('s4', reqbody))
